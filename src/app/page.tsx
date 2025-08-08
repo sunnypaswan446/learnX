@@ -1,18 +1,36 @@
 import PageContent from "@/Components/Common/pageContent";
 import { client } from "@/sanity/lib/client";
-export default async function Home() {
-  const page = await client.fetch(`*[_type == "homepage"][0]`);
 
-  const sections = page?.sections || [];
-  //
+const homepageQuery = `
+  *[_type == "homepage"][0]{
+    title,
+    sections[]{
+      _type,
+      _key,
+      // heroSection fields
+      eyebrow,
+      heading,
+      highlight,
+      subtext,
+      primaryCtaText,
+      primaryCtaUrl,
+      secondaryCtaText,
+      secondaryCtaUrl,
+      showChevron,
+      backgroundImage,
+
+      // Other section types can spread their own fields as they are added
+      ...
+    }
+  }
+`;
+
+export default async function Home() {
+  const page = await client.fetch(homepageQuery);
+
   return (
     <PageContent
-      // slug={homepage.slug}
-      // header={header}
       sections={page?.sections}
-      // footer={footer}
-      // partialHeader={partialHeader}
-      // partialFooter={partialFooter}
     />
   );
 }
